@@ -1,4 +1,5 @@
 """Hexdump command class."""
+
 import argparse
 import shlex
 from typing import Any, Dict
@@ -6,7 +7,7 @@ from typing import Any, Dict
 from lldb import SBCommandReturnObject, SBDebugger, SBExecutionContext
 
 from commands.base_command import BaseCommand
-from common.context_handler import ContextHandler
+from common.context_handler import context_handler
 from common.constants import SIZES
 
 
@@ -20,7 +21,6 @@ class HexdumpCommand(BaseCommand):
     def __init__(self, debugger: SBDebugger, __: Dict[Any, Any]) -> None:
         super().__init__()
         self.parser = self.get_command_parser()
-        self.context_handler = ContextHandler(debugger)
 
     @classmethod
     def get_command_parser(cls) -> argparse.ArgumentParser:
@@ -30,18 +30,23 @@ class HexdumpCommand(BaseCommand):
             "type",
             choices=["qword", "dword", "word", "byte"],
             default="byte",
-            help="The format for presenting data"
+            help="The format for presenting data",
         )
         parser.add_argument(
             "--reverse",
             action="store_true",
-            help="The direction of output lines. Low to high by default"
+            help="The direction of output lines. Low to high by default",
         )
-        parser.add_argument("--size", type=positive_int, default=16, help="The number of qword/dword/word/bytes to display")
+        parser.add_argument(
+            "--size",
+            type=positive_int,
+            default=16,
+            help="The number of qword/dword/word/bytes to display",
+        )
         parser.add_argument(
             "address",
             type=hex_int,
-            help="A value/address/symbol used as the location to print the hexdump from"
+            help="A value/address/symbol used as the location to print the hexdump from",
         )
         return parser
 
@@ -69,24 +74,24 @@ class HexdumpCommand(BaseCommand):
         address = args.address
         size = args.size
 
-        self.context_handler.refresh(exe_ctx)
+        context_handler.refresh(exe_ctx)
 
-        start = (size-1) * divisions if args.reverse else 0
+        start = (size - 1) * divisions if args.reverse else 0
         end = -divisions if args.reverse else size * divisions
         step = -divisions if args.reverse else divisions
 
         if divisions == SIZES.BYTE.value:
             if args.reverse:
-                self.context_handler.print_bytes(address + size - (size % 16), size % 16)
+                context_handler.print_bytes(address + size - (size % 16), size % 16)
                 start = size - (size % 16) - 16
                 end = -1
                 step = -16
 
             for i in range(start, end, -16 if args.reverse else 16):
-                self.context_handler.print_bytes(address + i, min(16, size - abs(start - i)))
+                context_handler.print_bytes(address + i, min(16, size - abs(start - i)))
         else:
             for i in range(start, end, step):
-                self.context_handler.print_memory_address(address + i, i, divisions)
+                context_handler.print_memory_address(address + i, i, divisions)
 
 
 def hex_int(x):

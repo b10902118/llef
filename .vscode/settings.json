@@ -1,4 +1,7 @@
 {
+    "python.analysis.extraPaths": [
+        "/home/bill/ndk/toolchains/llvm/prebuilt/linux-x86_64/lib/python3.11/site-packages"
+    ],
     "cSpell.words": [
         "aaaabaaaca",
         "aabacadaea",

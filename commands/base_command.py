@@ -15,15 +15,8 @@ class BaseCommand(ABC):
     def __init__(self) -> None:
         pass
 
-    @property
-    @abstractmethod
-    def container(self) -> Type[BaseContainer]:
-        """Container property."""
-
-    @property
-    @abstractmethod
-    def program(self) -> str:
-        """Program property."""
+    container: Type[BaseContainer]
+    program: str
 
     @abstractmethod
     def __call__(

@@ -11,16 +11,19 @@ It uses LLDB's Python API to add extra status output and a few new commands, so 
 ![llef demo](https://foundryzero.co.uk/assets/img/llef-small.gif)
 
 ## 💻 Supported Architectures
-* x86_64
-* arm
-* aarch64 / arm64
-* i386
-* PowerPC
+
+- x86_64
+- arm
+- aarch64 / arm64
+- i386
+- PowerPC
 
 ## 📓 Requirements
-* LLDB 15+ (https://apt.llvm.org/) _On macOS this is bundled with Xcode 14.3+_
+
+- LLDB 15+ (https://apt.llvm.org/) _On macOS this is bundled with Xcode 14.3+_
 
 ## ⚙ Installation
+
 The instructions below will install LLEF so that it is used by LLDB by default.
 
 1. Clone the repository.
@@ -41,7 +44,9 @@ lldb-15 <optional binary to debug>
 ### Use commands:
 
 #### llefsettings
+
 Various commands for setting, saving, loading and listing LLEF specific commands:
+
 ```
 (lldb) llefsettings --help
 list                list all settings
@@ -52,6 +57,7 @@ set                 Set LLEF settings
 ```
 
 Settings are stored in a file `.llef` located in your home directory formatted as following:
+
 ```
 [LLEF]
 <llefsettings> = <value>
@@ -75,7 +81,9 @@ Settings are stored in a file `.llef` located in your home directory formatted a
 | show_all_registers | Boolean | Enable/disable extended register output            |
 
 #### llefcolorsettings
+
 Allows setting LLEF GUI colors:
+
 ```
 (lldb) llefcolorsettings --help
 list                list all color settings
@@ -112,11 +120,15 @@ Supported colors: BLUE, GREEN, YELLOW, RED, PINK, CYAN, GREY
 | read_memory_address_color     |
 
 #### Hexdump
+
 View memory contents with:
+
 ```
 (lldb) hexdump type address [--size SIZE] [--reverse]
 ```
+
 e.g.
+
 ```
 (lldb) hexdump byte 0x7fffffffecc8 --size 0x38
 0x7fffffffecc8    3d 2f 75 73 72 2f 6c 6f 63 61 6c 2f 73 62 69 6e    =/usr/local/sbin
@@ -145,15 +157,19 @@ e.g.
 #### Context
 
 Refresh the LLEF GUI with:
+
 ```
 (lldb) context
 ```
+
 Refresh components of the LLEF GUI with:
+
 ```
 (lldb) context [{registers,stack,code,threads,trace,all} ...]
 ```
 
 #### Pattern Create
+
 ```
 (lldb) pattern create 10
 [+] Generating a pattern of 10 bytes (n=4)
@@ -178,17 +194,19 @@ aabacadaea
 [+] Found in $8 at index 0 (little endian)
 ```
 
-
 ### Breakpoint hook
+
 This is automatic and prints all the currently implemented information at a break point.
 
 #### Address Rebasing
+
 Configurable with the `rebase_addresses` setting the address rebasing feature performs a lookup for each code address presented in the output to display the associated binary and relative address. This relative address is offset by the value defined in setting `rebase_offset` which defaults to the Ghidra base address of `0x100000`. The result is an address output that can be easily copied and pasted into an IDE "Go To Address" feature without having to do the maths to convert from the runtime address.
 
 Rebased addresses are shown in brackets after the runtime address:
 ![rebase address feature](assets/rebase-feature.png)
 
 ## 👷‍♂️ Troubleshooting LLDB Python support
+
 LLDB comes bundled with python modules that are required for LLEF to run. If on launching LLDB with LLEF you encounter `ModuleNotFoundError` messages it is likely you will need to manually add the LLDB python modules on your python path.
 
 To do this run the following to establish your site-packages location:
@@ -213,10 +231,22 @@ To disable register coloring, and potentially significantly improve LLEF perform
 
 ```
  llefsettings set register_coloring False
- ```
-
+```
 
 ## 👏 Thanks
-We’re obviously standing on the shoulders of giants here - we’d like to credit [hugsy](https://twitter.com/_hugsy_) for [GEF](https://github.com/hugsy/gef) in particular, from which this tool draws *heavy* inspiration! Please consider this imitation as flattery 🙂
+
+We’re obviously standing on the shoulders of giants here - we’d like to credit [hugsy](https://twitter.com/_hugsy_) for [GEF](https://github.com/hugsy/gef) in particular, from which this tool draws _heavy_ inspiration! Please consider this imitation as flattery 🙂
 
 If you'd like to read a bit more about LLEF you could visit our [launch blog post](https://foundryzero.co.uk/2023/07/13/llef.html).
+
+## Bottleneck
+
+```
+(lldb) context gg
+GetFrame: 0.000011 seconds
+GetProcess: 0.000031 seconds
+GetTarget: 0.000011 seconds
+GetThread: 0.000009 seconds
+GetArch: 0.000078 seconds
+GetMemoryRegions: 5.321865 seconds
+```

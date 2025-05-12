@@ -25,6 +25,10 @@ from commands.context import ContextCommand
 from commands.settings import SettingsCommand
 from commands.color_settings import ColorSettingsCommand
 from commands.hexdump import HexdumpCommand
+from commands.vmmap import VmmapCommand
+from commands.clear import ClearCommand
+from commands.dereference import DereferenceCommand
+from commands.find import FindCommand
 from handlers.stop_hook import StopHookHandler
 
 
@@ -36,7 +40,11 @@ def __lldb_init_module(debugger: SBDebugger, _: Dict[Any, Any]) -> None:
         ContextCommand,
         SettingsCommand,
         ColorSettingsCommand,
-        HexdumpCommand
+        HexdumpCommand,
+        VmmapCommand,
+        ClearCommand,
+        DereferenceCommand,
+        FindCommand,
     ]
 
     handlers = [StopHookHandler]
